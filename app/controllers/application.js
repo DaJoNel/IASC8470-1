@@ -6,22 +6,26 @@ var PhotoCollection = Ember.ArrayProxy.extend(Ember.SortableMixin, {
 	content: [],
 });
 
-export default Ember.Controller.extend({
+export default Ember.Controller.extend( {
 	photos: PhotoCollection.create(),
 	searchField: '',
 	tagSearchField: '',
+	filteredPhotosLoaded: function() {
+		return this.get('filteredPhotos').length > 0;
+	}.property('filteredPhotos.length'),
 	tagList: ['hi','cheese'],
-	filteredPhotos: function () {
+	filteredPhotos: function() {
 		var filter = this.get('searchField');
 		var rx = new RegExp(filter, 'gi');
 		var photos = this.get('photos');
 
-		return photos.filter(function(photo){
+		return photos.filter(function(photo) {
 			return photo.get('title').match(rx) || photo.get('owner.username').match(rx);
 		});
 	}.property('photos.@each','searchField'),
 	actions: {
-		search: function () {
+		search: function() {
+			this.set('loading', true);
 			this.get('photos').content.clear();
 			this.store.unloadAll('photo');
 			this.send('getPhotos',this.get('tagSearchField'));
@@ -30,20 +34,20 @@ export default Ember.Controller.extend({
 			var apiKey = '60e5e96ee3938f6098c823357dc12ede';
 			var host = 'https://api.flickr.com/services/rest/';
 			var method = "flickr.tags.getClusterPhotos";
-			var requestURL = host + "?method="+method + "&api_key="+apiKey+"&tag="+tag+"&format=json&nojsoncallback=1";
+			var requestURL = host +"?method="+ method +"&api_key="+ apiKey +"&tag="+ tag +"&format=json&nojsoncallback=1";
 			var photos = this.get('photos');
 			var t = this;
 			Ember.$.getJSON(requestURL, function(data) {
-				//callback for successfully completed requests
-				//make secondary requests to get all of the photo information
-				data.photos.photo.map(function(photoitem) {//iterate over each photo
+				// Callback for successfully completed requests
+				// Make secondary requests to get all of the photo information
+				data.photos.photo.map(function(photoitem) { // Iterate over each photo
 					var infoRequestURL = host + "?method="+"flickr.photos.getInfo" + "&api_key="+apiKey+ "&photo_id="+photoitem.id+"&format=json&nojsoncallback=1";
 					Ember.$.getJSON(infoRequestURL, function(item){
 						var photo = item.photo;
-						var tags = photo.tags.tag.map(function(tagitem){
+						var tags = photo.tags.tag.map(function(tagitem) {
 							return tagitem._content;
 						});
-						var newPhotoItem = t.store.createRecord('photo',{
+						var newPhotoItem = t.store.createRecord('photo', {
 							title: photo.title._content,
 							dates: photo.dates,
 							owner: photo.owner,
@@ -51,7 +55,7 @@ export default Ember.Controller.extend({
 							link: photo.urls.url[0]._content,
 							views: photo.views,
 							tags: tags,
-							//flickr url data
+							// Flickr URL data
 							id: photo.id,
 							farm: photo.farm,
 							secret: photo.secret,
@@ -64,9 +68,10 @@ export default Ember.Controller.extend({
 		},
 		clicktag: function(tag) {
 			this.set('tagSearchField', tag);
+			this.set('loading', true);
 			this.get('photos').content.clear();
 			this.store.unloadAll('photo');
-			this.send('getPhotos',tag);
+			this.send('getPhotos', tag);
 		}
 	},
 	init: function() {
@@ -74,7 +79,7 @@ export default Ember.Controller.extend({
 		var apiKey = '60e5e96ee3938f6098c823357dc12ede';
 		var host = 'https://api.flickr.com/services/rest/';
 		var method = "flickr.tags.getHotList";
-		var requestURL = host + "?method="+method + "&api_key="+apiKey+"&count=75&format=json&nojsoncallback=1";
+		var requestURL = host +"?method="+ method +"&api_key="+ apiKey +"&count=75&format=json&nojsoncallback=1";
 		var t = this;
 		Ember.$.getJSON(requestURL, function(data) {
 			//callback for successfully completed requests

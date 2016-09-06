@@ -14,7 +14,7 @@ module.exports = function(environment) {
     },
 
     APP: {
-      // Here you can pass flags/options to your application instance
+      // Here you can pass flags/  // options to your application instance
       // when it is created
     },
     
@@ -23,7 +23,7 @@ module.exports = function(environment) {
       'script-src': "'self' ",
       'font-src': "'self' ",
       'connect-src': "'self' https://api.flickr.com", //Allow JSON requests to the flickr api
-      'img-src': "'self' http: https:", //Allow images from any http/https
+      'img-src': "'self' http: https: data:",
       'style-src': "'self' ",
       'media-src': "'self' "
     }
@@ -42,7 +42,7 @@ module.exports = function(environment) {
     ENV.baseURL = '/';
     ENV.locationType = 'none';
 
-    // keep test console output quieter
+    // Keep test console output quieter
     ENV.APP.LOG_ACTIVE_GENERATION = false;
     ENV.APP.LOG_VIEW_LOOKUPS = false;
 
@@ -50,7 +50,7 @@ module.exports = function(environment) {
   }
 
   if (environment === 'production') {
-
+    ENV.baseURL = '/ember/';
   }
 
   return ENV;
