@@ -1,4 +1,4 @@
-# Myproject
+# IASC 8470 Lab 1
 
 This README outlines the details of collaborating on this Ember application.
 This project is Lab 1 of Secure Web App Development, creating a client-side Flickr app.
@@ -52,5 +52,5 @@ Specify what it takes to deploy your app.
   * [ember inspector for firefox](https://addons.mozilla.org/en-US/firefox/addon/ember-inspector/)
 
 =======
-# my-project
+# IASC 8470 Lab 1
 >>>>>>> 3a2d700761a386c512722b190998e73dc246f57b
